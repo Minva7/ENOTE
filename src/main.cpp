@@ -669,6 +669,7 @@ void loop(void) {
 #include "string.h"
 #include "../lib/user_gui.h"
 #include <TFT_eSPI.h>
+
 //If you want to use the LVGL examples,
  // make sure to install the lv_examples Arduino library
  // and uncomment the following line.
@@ -695,7 +696,49 @@ void loop(void) {
 
 
 
+// Code to run a screen calibration, not needed when calibration values set in setup()
+void touch_calibrate()
+{
+  uint16_t calData[5];
+  uint8_t calDataOK = 0;
+TFT_eSPI tft = TFT_eSPI(480,320); 
+  // Calibrate
+  tft.fillScreen(TFT_BLACK);
+  tft.setCursor(20, 0);
+  tft.setTextFont(2);
+  tft.setTextSize(1);
+  tft.setTextColor(TFT_WHITE, TFT_BLACK);
 
+  tft.println("Touch corners as indicated");
+
+  tft.setTextFont(1);
+  tft.println();
+
+  tft.calibrateTouch(calData, TFT_MAGENTA, TFT_BLACK, 15);
+
+  Serial.println(); Serial.println();
+  Serial.println("// Use this calibration code in setup():");
+  Serial.print("  uint16_t calData[5] = ");
+  Serial.print("{ ");
+
+  for (uint8_t i = 0; i < 5; i++)
+  {
+    Serial.print(calData[i]);
+    if (i < 4) Serial.print(", ");
+  }
+
+  Serial.println(" };");
+  Serial.print("  tft.setTouch(calData);");
+  Serial.println(); Serial.println();
+
+  tft.fillScreen(TFT_BLACK);
+  
+  tft.setTextColor(TFT_GREEN, TFT_BLACK);
+  tft.println("Calibration complete!");
+  tft.println("Calibration code sent to Serial port.");
+
+  delay(4000);
+}
 
 uint8_t txValue = 0;                         //后面需要发送的值
 BLEServer *pServer = NULL;                   //BLEServer指针 pServer
@@ -809,11 +852,11 @@ void BLE_user_init(void)
 //Change to your screen resolution
 static const unsigned int screenWidth  = 480;
 static const unsigned int screenHeight = 320;
-
+TFT_eSPI tft = TFT_eSPI(screenWidth, screenHeight); 
 static lv_disp_draw_buf_t draw_buf;
 static lv_color_t buf[ screenWidth * 10 ];
 
-TFT_eSPI tft = TFT_eSPI(screenWidth, screenHeight); 
+
 
 #if LV_USE_LOG != 0
 // Serial debugging 
@@ -871,8 +914,9 @@ void my_touchpad_read( lv_indev_drv_t * indev_driver, lv_indev_data_t * data )
 
 void LVGL_user_init(void)
 {
-  uint16_t calData[5] = { 275, 3620, 264, 3532, 1 };
+  //uint16_t calData[5] = { 275, 3620, 264, 3532, 1 };
     //uint16_t calData[5] = { 225, 3684, 261, 3501, 7 };
+    uint16_t calData[5] = { 18, 1, 1, 1, 0 }; // 4.0
     tft.setTouch( calData );
 
     lv_disp_draw_buf_init( &draw_buf, buf, NULL, screenWidth * 10 );
@@ -909,7 +953,10 @@ void LVGL_user_init(void)
  //	const char* ssid     = "Tenda_6802F0";
 //	const char* password = "ming6617.";
 // SSID & Password
-const char* ssid = "Tenda_6802F0";
+//const char* ssid = "Tenda_6802F0";
+//const char* password = "ming6617.";
+
+const char* ssid = "MIN";
 const char* password = "ming6617.";
 WebServer server(80);  // Object of WebServer(HTTP port, 80 is defult)
  
@@ -1087,7 +1134,7 @@ void setup()
 
     tft.begin();          
     tft.setRotation( 3 ); // Landscape orientation, flipped 
-
+    touch_calibrate();  // get touch position parameters
     LVGL_user_init();
     user_start_gui();
 
@@ -1126,7 +1173,7 @@ void loop()
 {
     lv_timer_handler(); // let the GUI do its work 
      // deviceConnected 已连接
-    server.handleClient();
+   // server.handleClient();
 
      /*
     if (deviceConnected)
