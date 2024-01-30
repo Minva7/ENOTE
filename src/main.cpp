@@ -694,7 +694,10 @@ void loop(void) {
 ////#include <SPIFFS.h>
 //#include "ESPAsyncWebServer.h"
 
+#include "../lib/touch40.h"
 
+#define LCD_40
+//#define LCD_35
 
 // Code to run a screen calibration, not needed when calibration values set in setup()
 void touch_calibrate()
@@ -714,7 +717,7 @@ TFT_eSPI tft = TFT_eSPI(480,320);
   tft.setTextFont(1);
   tft.println();
 
-  tft.calibrateTouch(calData, TFT_MAGENTA, TFT_BLACK, 15);
+  //tft.calibrateTouch(calData, TFT_MAGENTA, TFT_BLACK, 15);
 
   Serial.println(); Serial.println();
   Serial.println("// Use this calibration code in setup():");
@@ -858,7 +861,7 @@ static lv_color_t buf[ screenWidth * 10 ];
 
 
 
-#if LV_USE_LOG != 0
+#if 1 //LV_USE_LOG != 0
 // Serial debugging 
 void my_print(const char * buf)
 {
@@ -884,6 +887,8 @@ void my_disp_flush( lv_disp_drv_t *disp, const lv_area_t *area, lv_color_t *colo
 
     lv_disp_flush_ready( disp );
 }
+
+#ifdef LCD_35
 
 //Read the touchpad
 void my_touchpad_read( lv_indev_drv_t * indev_driver, lv_indev_data_t * data )
@@ -911,13 +916,43 @@ void my_touchpad_read( lv_indev_drv_t * indev_driver, lv_indev_data_t * data )
         Serial.println( touchY );
     }
 }
+#else
+
+void my_touchpad_read(lv_indev_drv_t *indev_driver, lv_indev_data_t *data)
+{
+  if (touch_has_signal())
+  {
+    if (touch_touched())
+    {
+      data->state = LV_INDEV_STATE_PR;
+
+      
+      data->point.x = touch_last_x;
+      data->point.y = touch_last_y;
+    }
+    else if (touch_released())
+    {
+      data->state = LV_INDEV_STATE_REL;
+    }
+  }
+  else
+  {
+    data->state = LV_INDEV_STATE_REL;
+  }
+}
+#endif // DEBUG
 
 void LVGL_user_init(void)
 {
   //uint16_t calData[5] = { 275, 3620, 264, 3532, 1 };
     //uint16_t calData[5] = { 225, 3684, 261, 3501, 7 };
+#ifdef LCD_35
     uint16_t calData[5] = { 18, 1, 1, 1, 0 }; // 4.0
     tft.setTouch( calData );
+#else
+touch40_init(tft.width(), tft.height(),tft.getRotation());
+#endif // DEBUG
+
 
     lv_disp_draw_buf_init( &draw_buf, buf, NULL, screenWidth * 10 );
 
@@ -953,11 +988,11 @@ void LVGL_user_init(void)
  //	const char* ssid     = "Tenda_6802F0";
 //	const char* password = "ming6617.";
 // SSID & Password
-//const char* ssid = "Tenda_6802F0";
-//const char* password = "ming6617.";
-
-const char* ssid = "MIN";
+const char* ssid = "Tenda_6802F0";
 const char* password = "ming6617.";
+
+//const char* ssid = "MIN";
+//const char* password = "ming6617.";
 WebServer server(80);  // Object of WebServer(HTTP port, 80 is defult)
  
 
@@ -1111,13 +1146,14 @@ for (int i = 0; texts[i] != '\0'; i++)
 
 }
 
+
 void setup()
 {
     Serial.begin( 115200 ); 
-    pinMode(22,OUTPUT);
-    pinMode(4,OUTPUT);
-    digitalWrite(22,HIGH);
-    digitalWrite(4,HIGH);
+//    pinMode(22,OUTPUT);
+ //   pinMode(4,OUTPUT);
+//    digitalWrite(22,HIGH);
+ //   digitalWrite(4,HIGH);
     EEPROM.begin(4096);    //申请空间，传入参数为size，为需要读写的数据字节最大地址+1，取值1~4096；
     
     //BLE_user_init();
@@ -1134,7 +1170,7 @@ void setup()
 
     tft.begin();          
     tft.setRotation( 3 ); // Landscape orientation, flipped 
-    touch_calibrate();  // get touch position parameters
+    
     LVGL_user_init();
     user_start_gui();
 
@@ -1156,7 +1192,7 @@ void setup()
   Serial.print("Got IP: ");
   Serial.println(WiFi.localIP());  //Show ESP32 IP on serial
 
-  if (!MDNS.begin("menote")) {//自定义域名
+  if (!MDNS.begin("menote")) { //自定义域名
     Serial.println("Error setting up MDNS responder!");
   }
   MDNS.addService("http", "tcp", 80); //启用DNS服务
@@ -1171,7 +1207,7 @@ void setup()
 
 void loop()
 {
-    lv_timer_handler(); // let the GUI do its work 
+  lv_timer_handler(); // let the GUI do its work 
      // deviceConnected 已连接
    // server.handleClient();
 
@@ -1205,5 +1241,3 @@ void loop()
     */
 }   
 
-
- 

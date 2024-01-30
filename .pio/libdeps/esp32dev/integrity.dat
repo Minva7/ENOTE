@@ -1,5 +1,6 @@
-ottowinter/ESPAsyncWebServer-esphome@^3.0.0
 bodmer/TFT_eSPI@^2.4.78
-knolleary/PubSubClient@^2.8
-bblanchon/ArduinoJson@5.13.0
+ottowinter/ESPAsyncWebServer-esphome@^3.0.0
 lvgl/lvgl@^8.3.2
+knolleary/PubSubClient@^2.8
+codewitch-honey-crisis/htcw_ft6336@^0.1.5
+bblanchon/ArduinoJson@5.13.0
