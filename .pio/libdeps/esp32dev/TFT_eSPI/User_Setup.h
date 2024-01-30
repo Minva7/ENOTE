@@ -51,12 +51,12 @@
 //#define HX8357D_DRIVER
 //#define ILI9481_DRIVER
 //#define ILI9486_DRIVER
-#define ILI9488_DRIVER     // WARNING: Do not connect ILI9488 display SDO to MISO if other devices share the SPI bus (TFT SDO does NOT tristate when CS is high)
+//#define ILI9488_DRIVER     // WARNING: Do not connect ILI9488 display SDO to MISO if other devices share the SPI bus (TFT SDO does NOT tristate when CS is high)
 //#define ST7789_DRIVER      // Full configuration option, define additional parameters below for this display
 //#define ST7789_2_DRIVER    // Minimal configuration option, define additional parameters below for this display
 //#define R61581_DRIVER
 //#define RM68140_DRIVER
-//#define ST7796_DRIVER
+#define ST7796_DRIVER
 //#define SSD1351_DRIVER
 //#define SSD1963_480_DRIVER
 //#define SSD1963_800_DRIVER
@@ -203,14 +203,26 @@
 // For ESP32 Dev board (only tested with ILI9341 display)
 // The hardware SPI can be mapped to any pins
 
-#define TFT_MISO 19
+// 3.5
+/*#define TFT_MISO 19
 #define TFT_MOSI 23
 #define TFT_SCLK 18
 #define TFT_CS   25  // Chip select control pin
 #define TFT_DC    26  // Data Command control pin
 #define TFT_RST   27  // Reset pin (could connect to RST pin)
 //#define TFT_RST  -1  // Set TFT_RST to -1 if display RESET is connected to ESP32 board RST
-#define TOUCH_CS 21
+#define TOUCH_CS 21*/
+
+// 4.0
+#define TFT_MISO 12
+#define TFT_MOSI 13
+#define TFT_SCLK 14
+#define TFT_CS   15  // Chip select control pin
+#define TFT_DC    2  // Data Command control pin
+#define TFT_RST   27  // Reset pin (could connect to RST pin)
+//#define TFT_RST  -1  // Set TFT_RST to -1 if display RESET is connected to ESP32 board RST
+//#define TOUCH_CS 22
+
 // For ESP32 Dev board (only tested with GC9A01 display)
 // The hardware SPI can be mapped to any pins
 
@@ -342,8 +354,8 @@
 // #define SPI_FREQUENCY  20000000
 //#define SPI_FREQUENCY  27000000
 // #define SPI_FREQUENCY  40000000
- #define SPI_FREQUENCY  55000000 // STM32 SPI1 only (SPI2 maximum is 27MHz)
-//#define SPI_FREQUENCY  80000000
+// #define SPI_FREQUENCY  55000000 // STM32 SPI1 only (SPI2 maximum is 27MHz)
+#define SPI_FREQUENCY  80000000
 
 // Optional reduced SPI frequency for reading TFT
 #define SPI_READ_FREQUENCY  20000000
