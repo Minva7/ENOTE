@@ -3,7 +3,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
+/*
  #define TOUCH_FT6336
  #define TOUCH_FT6336_SCL 25
  #define TOUCH_FT6336_SDA 32
@@ -58,6 +58,7 @@ bool touch_touched(void)
 //#else
     touch_last_x = map(ts.points[0].x, min_x, max_x, 0, width - 1);
     touch_last_y = map(ts.points[0].y, min_y, max_y, 0, height - 1);
+    Serial.println("have touch");
 //#endif
 //    Serial.print("x = ");
 //    Serial.print(touch_last_x);
@@ -81,7 +82,7 @@ bool touch_released(void)
 {
   return true;
 }
-
+*/
 #ifdef __cplusplus
 } /* extern "C" */
 #endif

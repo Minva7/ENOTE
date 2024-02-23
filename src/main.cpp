@@ -665,7 +665,7 @@ void loop(void) {
 
 //#include <lv_demos.h>
 #include <lvgl.h>
-#include "test.h"
+//#include "test.h"
 #include "string.h"
 #include "../lib/user_gui.h"
 #include <TFT_eSPI.h>
@@ -695,8 +695,8 @@ void loop(void) {
 //#include "ESPAsyncWebServer.h"
 
 #include "../lib/touch40.h"
-
-#define LCD_40
+#include "../lib/FT6336.h"
+#define LCD_40 1
 //#define LCD_35
 
 // Code to run a screen calibration, not needed when calibration values set in setup()
@@ -888,6 +888,7 @@ void my_disp_flush( lv_disp_drv_t *disp, const lv_area_t *area, lv_color_t *colo
     lv_disp_flush_ready( disp );
 }
 
+
 #ifdef LCD_35
 
 //Read the touchpad
@@ -918,27 +919,40 @@ void my_touchpad_read( lv_indev_drv_t * indev_driver, lv_indev_data_t * data )
 }
 #else
 
+#define I2C_SDA 32
+#define I2C_SCL 25
+#define RST_N_PIN 33
+#define INT_N_PIN 39
+FT6336U ft6336u(I2C_SDA, I2C_SCL, RST_N_PIN, INT_N_PIN); 
 void my_touchpad_read(lv_indev_drv_t *indev_driver, lv_indev_data_t *data)
 {
-  if (touch_has_signal())
-  {
-    if (touch_touched())
-    {
-      data->state = LV_INDEV_STATE_PR;
-
-      
-      data->point.x = touch_last_x;
-      data->point.y = touch_last_y;
+  if(digitalRead(INT_N_PIN) == 0) {
+      if(ft6336u.read_td_status() == 1 )
+      {
+        Serial.print("FT6336U TD Status: "); 
+        Serial.println(ft6336u.read_td_status());  
+        Serial.print("FT6336U Touch Event/ID 1: ("); 
+        Serial.print(ft6336u.read_touch1_event()); Serial.print(" / "); Serial.print(ft6336u.read_touch1_id()); Serial.println(")"); 
+        Serial.print("FT6336U Touch Position 1: ("); 
+        Serial.print(ft6336u.read_touch1_x()); Serial.print(" , "); Serial.print(ft6336u.read_touch1_y()); Serial.println(")"); 
+        Serial.print("FT6336U Touch Weight/MISC 1: ("); 
+        Serial.print(ft6336u.read_touch1_weight()); Serial.print(" / "); Serial.print(ft6336u.read_touch1_misc()); Serial.println(")"); 
+        Serial.print("FT6336U Touch Event/ID 2: ("); 
+        Serial.print(ft6336u.read_touch2_event()); Serial.print(" / "); Serial.print(ft6336u.read_touch2_id()); Serial.println(")"); 
+        Serial.print("FT6336U Touch Position 2: ("); 
+        Serial.print(ft6336u.read_touch2_x()); Serial.print(" , "); Serial.print(ft6336u.read_touch2_y()); Serial.println(")"); 
+        Serial.print("FT6336U Touch Weight/MISC 2: ("); 
+        Serial.print(ft6336u.read_touch2_weight()); Serial.print(" / "); Serial.print(ft6336u.read_touch2_misc()); Serial.println(")"); 
+        data->state = LV_INDEV_STATE_PR;
+        data->point.x = TouchHeight - ft6336u.read_touch1_y();
+        data->point.y = ft6336u.read_touch1_x();
+      }
+        
     }
-    else if (touch_released())
-    {
+    else{
       data->state = LV_INDEV_STATE_REL;
     }
-  }
-  else
-  {
-    data->state = LV_INDEV_STATE_REL;
-  }
+  
 }
 #endif // DEBUG
 
@@ -950,7 +964,7 @@ void LVGL_user_init(void)
     uint16_t calData[5] = { 18, 1, 1, 1, 0 }; // 4.0
     tft.setTouch( calData );
 #else
-touch40_init(tft.width(), tft.height(),tft.getRotation());
+//touch40_init(tft.width(), tft.height(),tft.getRotation());
 #endif // DEBUG
 
 
@@ -1146,16 +1160,22 @@ for (int i = 0; texts[i] != '\0'; i++)
 
 }
 
-
+#include <Wire.h>
 void setup()
 {
     Serial.begin( 115200 ); 
+
 //    pinMode(22,OUTPUT);
  //   pinMode(4,OUTPUT);
 //    digitalWrite(22,HIGH);
  //   digitalWrite(4,HIGH);
     EEPROM.begin(4096);    //申请空间，传入参数为size，为需要读写的数据字节最大地址+1，取值1~4096；
-    
+    ft6336u.begin(); 
+    //ft6336u.setRotation(Rotation_2);
+    Serial.print("FT6336U Firmware Version: "); 
+    Serial.println(ft6336u.read_firmware_id());  
+    Serial.print("FT6336U Device Mode: "); 
+    Serial.println(ft6336u.read_device_mode()); 
     //BLE_user_init();
 
     static lv_disp_draw_buf_t draw_buf;
@@ -1237,7 +1257,45 @@ void loop()
         // do stuff here on connecting
         oldDeviceConnected = deviceConnected;
     }
-    delay( 1 );
     */
+    delay( 1 );
+    
 }   
 
+
+
+
+
+/*
+
+
+void setup() {
+    Serial.begin(115200); 
+
+     
+}
+
+void loop() {
+    if(digitalRead(INT_N_PIN) == 0) {
+      if(ft6336u.read_td_status() == 1 )
+      {
+        Serial.print("FT6336U TD Status: "); 
+        Serial.println(ft6336u.read_td_status());  
+        Serial.print("FT6336U Touch Event/ID 1: ("); 
+        Serial.print(ft6336u.read_touch1_event()); Serial.print(" / "); Serial.print(ft6336u.read_touch1_id()); Serial.println(")"); 
+        Serial.print("FT6336U Touch Position 1: ("); 
+        Serial.print(ft6336u.read_touch1_x()); Serial.print(" , "); Serial.print(ft6336u.read_touch1_y()); Serial.println(")"); 
+        Serial.print("FT6336U Touch Weight/MISC 1: ("); 
+        Serial.print(ft6336u.read_touch1_weight()); Serial.print(" / "); Serial.print(ft6336u.read_touch1_misc()); Serial.println(")"); 
+        Serial.print("FT6336U Touch Event/ID 2: ("); 
+        Serial.print(ft6336u.read_touch2_event()); Serial.print(" / "); Serial.print(ft6336u.read_touch2_id()); Serial.println(")"); 
+        Serial.print("FT6336U Touch Position 2: ("); 
+        Serial.print(ft6336u.read_touch2_x()); Serial.print(" , "); Serial.print(ft6336u.read_touch2_y()); Serial.println(")"); 
+        Serial.print("FT6336U Touch Weight/MISC 2: ("); 
+        Serial.print(ft6336u.read_touch2_weight()); Serial.print(" / "); Serial.print(ft6336u.read_touch2_misc()); Serial.println(")"); 
+      }
+        
+    }
+delay(1);
+}
+*/
