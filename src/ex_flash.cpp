@@ -46,7 +46,7 @@ void get_str_to_gui(char *str , unsigned int addr)
        *str = *(str + 1);
        str++;
        i++;
- //      printf("%c", *(str));
+       printf("%c", *(str));
     } 
     str--;
     *str = '\0';
@@ -56,9 +56,10 @@ void get_str_to_gui(char *str , unsigned int addr)
 void clear_all(void)
 {
   unsigned int i = 0;
-  for(i = 0; i < 4095;i++) 
+  for(i = 0; i < 4096;i++) 
   {
     EEPROM.write(i,0xff);
+    delay(1);
   }  
-  
+  printf("clear all success !\r\n");
 }

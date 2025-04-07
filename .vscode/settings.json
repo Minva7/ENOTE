@@ -27,6 +27,9 @@
         "tuple": "cpp",
         "utility": "cpp",
         "regex": "cpp",
-        "istream": "cpp"
+        "istream": "cpp",
+        "optional": "c",
+        "system_error": "c",
+        "functional": "c"
     }
 }

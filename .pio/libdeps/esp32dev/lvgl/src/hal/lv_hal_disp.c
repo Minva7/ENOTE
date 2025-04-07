@@ -195,7 +195,8 @@ lv_disp_t * lv_disp_drv_register(lv_disp_drv_t * driver)
         LV_LOG_WARN("full_refresh requires at least screen sized draw buffer(s)");
     }
 
-    disp->bg_color = lv_color_white();
+    //disp->bg_color = lv_color_white();
+    disp->bg_color = lv_color_black();
 #if LV_COLOR_SCREEN_TRANSP
     disp->bg_opa = LV_OPA_TRANSP;
 #else

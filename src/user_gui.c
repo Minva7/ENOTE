@@ -80,7 +80,7 @@ void user_cb1_logic(lv_event_t *cb)
         else
         {
             lv_obj_set_style_opa(cb_1,LV_OPA_100,LV_PART_MAIN);  //透明度
-            lv_obj_set_style_text_color(cb_1,lv_color_hex(0),LV_PART_MAIN);
+            lv_obj_set_style_text_color(cb_1,lv_color_hex(0xffffff),LV_PART_MAIN);
             printf("the cb_1 check off\r\n");
         }
 
@@ -104,7 +104,7 @@ void user_cb2_logic(lv_event_t *cb)
         else
         {
             lv_obj_set_style_opa(cb_2,LV_OPA_100,LV_PART_MAIN);  //透明度
-            lv_obj_set_style_text_color(cb_2,lv_color_hex(0),LV_PART_MAIN);
+            lv_obj_set_style_text_color(cb_2,lv_color_hex(0xffffff),LV_PART_MAIN);
             printf("the cb_2 check off\r\n");
         }
 
@@ -127,7 +127,7 @@ void user_cb3_logic(lv_event_t *cb)
         else
         {
             lv_obj_set_style_opa(cb_3,LV_OPA_100,LV_PART_MAIN);  //透明度
-            lv_obj_set_style_text_color(cb_3,lv_color_hex(0),LV_PART_MAIN);
+            lv_obj_set_style_text_color(cb_3,lv_color_hex(0xffffff0),LV_PART_MAIN);
             printf("the cb_3 check off\r\n");
         }
 
@@ -150,7 +150,7 @@ void user_cb4_logic(lv_event_t *cb)
         else
         {
             lv_obj_set_style_opa(cb_4,LV_OPA_100,LV_PART_MAIN);  //透明度
-            lv_obj_set_style_text_color(cb_4,lv_color_hex(0),LV_PART_MAIN);
+            lv_obj_set_style_text_color(cb_4,lv_color_hex(0xffffff),LV_PART_MAIN);
             printf("the cb_4 check off\r\n");
         }
     }
@@ -172,7 +172,7 @@ void user_cb5_logic(lv_event_t *cb)
         else
         {
             lv_obj_set_style_opa(cb_5,LV_OPA_100,LV_PART_MAIN);  //透明度
-            lv_obj_set_style_text_color(cb_5,lv_color_hex(0),LV_PART_MAIN);
+            lv_obj_set_style_text_color(cb_5,lv_color_hex(0xffffff),LV_PART_MAIN);
             printf("the cb_5 check off\r\n");
         }
     }
@@ -194,7 +194,7 @@ void user_cb6_logic(lv_event_t *cb)
         else
         {
             lv_obj_set_style_opa(cb_6,LV_OPA_100,LV_PART_MAIN);  //透明度
-            lv_obj_set_style_text_color(cb_6,lv_color_hex(0),LV_PART_MAIN);
+            lv_obj_set_style_text_color(cb_6,lv_color_hex(0xffffff),LV_PART_MAIN);
             printf("the cb_6 check off\r\n");
         }
     }
@@ -205,7 +205,37 @@ void user_xbox(unsigned char cb_amount)
 {
     lv_obj_t * title = lv_label_create(lv_scr_act());
     static lv_style_t style_cb1;
-    notifications = lv_obj_create(lv_scr_act());
+
+    static lv_style_t style; 
+    lv_obj_t* obj = lv_obj_create(lv_scr_act());
+    lv_style_init(&style);
+    lv_style_set_radius(&style, 0);
+    /*Make a gradient*/
+    lv_style_set_bg_opa(&style, LV_OPA_COVER);
+    lv_style_set_bg_color(&style, lv_palette_lighten(LV_PALETTE_NONE, 1));
+    lv_style_set_border_width(&style,0);
+   // lv_style_set_bg_grad_color(&style, lv_palette_main(LV_PALETTE_BLUE));
+   // lv_style_set_bg_grad_dir(&style, LV_GRAD_DIR_VER);
+  //  lv_style_set_bg_main_stop(&style, 1);
+   // lv_style_set_bg_grad_stop(&style, 149);
+    /*Create an object with the new style*/
+    
+    //lv_obj_set_style_size(obj,480,2);
+    lv_obj_set_width(obj, 480);
+    lv_obj_set_height(obj, 480);
+    lv_obj_set_x(obj,0);
+    lv_obj_set_y(obj,0);
+    lv_obj_set_height(obj, LV_PCT(500));
+    lv_obj_set_flex_flow(obj, LV_FLEX_FLOW_COLUMN);
+    lv_obj_set_flex_grow(obj, 1); 
+    lv_obj_add_style(obj, &style, 0);
+   // lv_obj_align(obj,LV_ALIGN_OUT_TOP_LEFT,0,0);
+   // lv_palette_main(LV_PALETTE_GREEN);
+
+
+   //  windows_bg = lv_obj_create(lv_scr_act());//创建对象
+    
+ //   notifications = lv_obj_create(lv_scr_act());
   //  lv_obj_t * current_time = lv_label_create(lv_scr_act());
     
 /*
@@ -218,19 +248,27 @@ void user_xbox(unsigned char cb_amount)
         lv_obj_set_style_max_height(notifications, 300, 50);
     }
 */
-
+/*
     lv_obj_set_height(notifications, LV_PCT(500));
     lv_obj_set_style_width(notifications, 500, 500);
     lv_obj_set_size(notifications,480,500);
-    lv_obj_set_flex_flow(notifications, LV_FLEX_FLOW_COLUMN);
-    lv_obj_set_flex_grow(notifications, 1);
+    lv_style_set_bg_color(&style, lv_palette_lighten(LV_PALETTE_GREY, 1));
 
-    title = lv_label_create(notifications);
+
+    //lv_obj_set_style_bg_color(notifications,lv_palette_lighten(LV_PALETTE_RED,50),1);
+    //lv_style_set_bg_color(notifications,lv_palette_lighten(LV_PALETTE_RED,1)); 
+    lv_obj_set_style_bg_color(notifications, lv_palette_lighten(LV_PALETTE_RED,255), 255);
+    //lv_style_set_bg_color(windows_bg,lv_palette_lighten(LV_PALETTE_BLUE,50));
+    
+    lv_obj_set_flex_flow(notifications, LV_FLEX_FLOW_COLUMN);
+    lv_obj_set_flex_grow(notifications, 1);                     
+*/
+    title = lv_label_create(obj);
     lv_label_set_recolor(title, 1);
     lv_label_set_text(title, "#ff802a Agent");
-//  lv_obj_align(title,LV_ALIGN_TOP_MID,20,0);
+ // lv_obj_align(title,LV_ALIGN_TOP_LEFT,20,0);
 
-    lv_obj_add_style(title, &style_title, 0);
+  //  lv_obj_add_style(title, &style_title, 0);
    // LV_PART_MAIN
 /*
     current_time = lv_label_create(lv_scr_act());
@@ -239,22 +277,22 @@ void user_xbox(unsigned char cb_amount)
     lv_obj_add_style(current_time, &style_title, 0);
 */
     if(cb_amount > 0)
-        cb_1 = lv_checkbox_create(notifications);
+        cb_1 = lv_checkbox_create(obj);
     else ;
     if(cb_amount > 1)
-    cb_2 = lv_checkbox_create(notifications);
+    cb_2 = lv_checkbox_create(obj);
     else ;
     if(cb_amount > 2)
-    cb_3 = lv_checkbox_create(notifications);
+    cb_3 = lv_checkbox_create(obj);
     else ;
     if(cb_amount > 3)
-    cb_4 = lv_checkbox_create(notifications);
+    cb_4 = lv_checkbox_create(obj);
     else ;
     if(cb_amount > 4)
-    cb_5 = lv_checkbox_create(notifications);
+    cb_5 = lv_checkbox_create(obj);
     else ;
     if(cb_amount > 5)
-    cb_6 = lv_checkbox_create(notifications);
+    cb_6 = lv_checkbox_create(obj);
     else ;
 
 
@@ -298,6 +336,7 @@ void user_gui_cb(unsigned char cb_num, char *buf)
                 
                 //lv_label_set_recolor(cb_1, 1);
                 lv_checkbox_set_text(cb_1, buf);
+                lv_obj_set_style_text_color(cb_1,lv_color_hex(0xffffff),LV_PART_MAIN);
                 lv_obj_add_style(cb_1, &style_cb_finsh, LV_PART_MAIN | LV_STATE_DEFAULT);
                 lv_obj_add_event_cb(cb_1, user_cb1_logic, LV_EVENT_VALUE_CHANGED, 2);
                 break;
@@ -306,6 +345,7 @@ void user_gui_cb(unsigned char cb_num, char *buf)
                // cb_2 = lv_checkbox_create(notifications);
                 //lv_label_set_recolor(cb_1, 1);
                 lv_checkbox_set_text(cb_2, buf);
+                lv_obj_set_style_text_color(cb_2,lv_color_hex(0xffffff),LV_PART_MAIN);
                 lv_obj_add_style(cb_2, &style_cb_finsh, LV_PART_MAIN | LV_STATE_DEFAULT);
                 lv_obj_add_event_cb(cb_2, user_cb2_logic, LV_EVENT_VALUE_CHANGED, 2);
                 break;
@@ -313,6 +353,7 @@ void user_gui_cb(unsigned char cb_num, char *buf)
                // cb_3 = lv_checkbox_create(notifications);
                 //lv_label_set_recolor(cb_1, 1);
                 lv_checkbox_set_text(cb_3, buf);
+                lv_obj_set_style_text_color(cb_3,lv_color_hex(0xffffff),LV_PART_MAIN);
                 lv_obj_add_style(cb_3, &style_cb_finsh, LV_PART_MAIN | LV_STATE_DEFAULT);
                 lv_obj_add_event_cb(cb_3, user_cb3_logic, LV_EVENT_VALUE_CHANGED, 2);
                 break;
@@ -320,6 +361,7 @@ void user_gui_cb(unsigned char cb_num, char *buf)
               //  cb_4 = lv_checkbox_create(notifications);
                 //lv_label_set_recolor(cb_1, 1);
                 lv_checkbox_set_text(cb_4, buf);
+                lv_obj_set_style_text_color(cb_4,lv_color_hex(0xffffff),LV_PART_MAIN);
                 lv_obj_add_style(cb_4, &style_cb_finsh, LV_PART_MAIN | LV_STATE_DEFAULT);
                 lv_obj_add_event_cb(cb_4, user_cb4_logic, LV_EVENT_VALUE_CHANGED, 2);
                 break;
@@ -328,6 +370,7 @@ void user_gui_cb(unsigned char cb_num, char *buf)
              //   cb_5 = lv_checkbox_create(notifications);
                 //lv_label_set_recolor(cb_1, 1);
                 lv_checkbox_set_text(cb_5, buf);
+                lv_obj_set_style_text_color(cb_5,lv_color_hex(0xffffff),LV_PART_MAIN);
                 lv_obj_add_style(cb_5, &style_cb_finsh, LV_PART_MAIN | LV_STATE_DEFAULT);
                 lv_obj_add_event_cb(cb_5, user_cb5_logic, LV_EVENT_VALUE_CHANGED, 2);
                 break;
@@ -335,6 +378,7 @@ void user_gui_cb(unsigned char cb_num, char *buf)
               //  cb_6 = lv_checkbox_create(notifications);
                 //lv_label_set_recolor(cb_1, 1);
                 lv_checkbox_set_text(cb_6, buf);
+                lv_obj_set_style_text_color(cb_6,lv_color_hex(0xffffff),LV_PART_MAIN);
                 lv_obj_add_style(cb_6, &style_cb_finsh, LV_PART_MAIN | LV_STATE_DEFAULT);
                 lv_obj_add_event_cb(cb_6, user_cb6_logic, LV_EVENT_VALUE_CHANGED, 2);
                 break;
